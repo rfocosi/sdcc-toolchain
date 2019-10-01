@@ -9,7 +9,7 @@ ENV TARGET_PATH=$WORKSPACE_ROOT/target
 
 ARG SDCC_LIB_MAIN_PATH=/usr/share/sdcc
 
-RUN apt-get update && apt-get install -y sdcc gettext-base binutils
+RUN apt-get update && apt-get install -y sdcc gettext-base binutils bsdmainutils
 
 ENV SDCC_INCLUDE_MAIN=${SDCC_LIB_MAIN_PATH}/include
 ENV SDCC_LIB_MAIN=${SDCC_LIB_MAIN_PATH}/lib

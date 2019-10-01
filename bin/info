@@ -1,20 +1,41 @@
 #!/bin/bash
 echo "SDCC Toolchain V1.0"
+
 echo
 sdcc -v
+
 echo
-echo "- Lib files:"
-ls -C $SDCC_LIB_Z80
+echo "- Lib files ($SDCC_LIB_MAIN):"
+find $SDCC_LIB_MAIN -name *.lib | awk -v pattern="$SDCC_LIB_MAIN/" '{ gsub(pattern, "");}1' | sort | column
+
 echo
-echo "- Extra lib files:"
-ls -C $SDCC_LIB
+echo "- Rel files ($SDCC_LIB_MAIN):"
+find $SDCC_LIB_MAIN -name *.rel | awk -v pattern="$SDCC_LIB_MAIN/" '{ gsub(pattern, "");}1' | sort | column
+
 echo
-echo "- Include files:"
-ls -C $SDCC_INCLUDE_Z80
+echo "- Extra lib files ($SDCC_LIB):"
+EXTRA_LIB_FILES=`find $SDCC_LIB -name *.lib | awk -v pattern="$SDCC_LIB/" '{ gsub(pattern, "");}1' | sort | column`
+[ -z "$EXTRA_LIB_FILES" ] && echo "None"
+echo $EXTRA_LIB_FILES
+
 echo
-echo "- Extra include files:"
-ls -C $SDCC_INCLUDE
+echo "- Extra rel files ($SDCC_LIB):"
+EXTRA_REL_FILES=`find $SDCC_LIB -name *.rel | awk -v pattern="$SDCC_LIB/" '{ gsub(pattern, "");}1' | sort | column`
+[ -z "$EXTRA_REL_FILES" ] && echo "None"
+echo $EXTRA_REL_FILES
+
+echo
+echo "- Include files ($SDCC_INCLUDE_MAIN):"
+find $SDCC_INCLUDE_MAIN -name *.h | awk -v pattern="$SDCC_INCLUDE_MAIN/" '{ gsub(pattern, "");}1' | sort | column
+
+echo
+echo "- Extra include files ($SDCC_INCLUDE):"
+EXTRA_INCLUDE_FILES=`find $SDCC_INCLUDE -name *.h | awk -v pattern="$SDCC_INCLUDE/" '{ gsub(pattern, "");}1' | sort | column`
+[ -z "$EXTRA_INCLUDE_FILES" ] && echo "None"
+echo $EXTRA_INCLUDE_FILES
+
 echo
 echo "- Enviroment variables:"
 env
+
 echo
