@@ -3,16 +3,12 @@ Docker-based SDCC Toolchain
 
 ## Requirements
 
-- Docker (https://docs.docker.com/install/)
-- docker-compose (https://docs.docker.com/compose/install/)
+- [Docker](https://docs.docker.com/install/)
+- [docker-compose](https://docs.docker.com/compose/install/)
 
 ## How to use
 
-#### Pull the container:
-
-`docker-compose pull rfocosi/sdcc-toolchain:latest`
-
-#### SDCC Parameters
+### SDCC Parameters
 The SDCC parameters can be added to a `<source_file_name>.params` file
 
 Ex.:
@@ -21,8 +17,10 @@ Ex.:
 > ls
 file.c
 file.params
+```
 
-> cat file.params
+`file.params`:
+```
 SDCC_ARGS="--code-loc 0x180 --data-loc 0 -mz80 --disable-warning 196 --no-std-crt0 $SDCC_LIB/crt0_msxdos_advanced.rel $SDCC_LIB/printf.rel $SDCC_LIB/putchar_msxdos.rel asm.lib fusion.lib"
 SRC_HEX_FILE="$FILE_NAME.ihx"
 TARGET_BIN_FILE="$FILE_NAME.com"
