@@ -24,20 +24,19 @@ cd $WORKSPACE_ROOT
 FILE_BUILD_PATH=`echo $BUILD_PATH/$SRC_FILE_REL_PATH | sed 's/\.[^.]\+$//g'`
 
 FILE_NAME=`echo $SRC_FILE_NAME | sed 's/\.c//g'`
-SRC_FILE_PARAMS=`grep '^.\+' $SRC_FILE_PATH/$FILE_NAME.params | head -n 1 | envsubst`
-IHX_FILE=$FILE_NAME.ihx
-COM_FILE=$FILE_NAME.com
+
+source $SRC_FILE_PATH/$FILE_NAME.params
 
 [ ! -d $FILE_BUILD_PATH ] && mkdir -p $FILE_BUILD_PATH
 
-sdcc $SRC_FILE_PARAMS $SRC_FILE_RES_PATH -o $FILE_BUILD_PATH/
+sdcc $SDCC_ARGS $SRC_FILE_RES_PATH -o $FILE_BUILD_PATH/
 
-if [ -f "$FILE_BUILD_PATH/$IHX_FILE" ]; then
+if [ -f "$FILE_BUILD_PATH/$SRC_HEX_FILE" ]; then
   FILE_TARGET_PATH=`echo $TARGET_PATH/$SRC_FILE_REL_PATH | sed 's/\.c//g'`
 
   [ ! -d $FILE_TARGET_PATH ] && mkdir -p $FILE_TARGET_PATH
 
-  objcopy -I ihex -O binary $FILE_BUILD_PATH/$IHX_FILE $FILE_TARGET_PATH/$COM_FILE
+  objcopy -I ihex -O binary $FILE_BUILD_PATH/$SRC_HEX_FILE $FILE_TARGET_PATH/$TARGET_BIN_FILE
 
-  echo "Final file: $FILE_TARGET_PATH/$COM_FILE"
+  echo "Final file: $FILE_TARGET_PATH/$TARGET_BIN_FILE"
 fi
