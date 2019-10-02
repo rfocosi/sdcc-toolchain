@@ -1,6 +1,8 @@
 FROM debian:bullseye
 MAINTAINER Roberto Focosi, roberto.focosi@msx2cas.com
 
+ENV TOOLCHAIN_VERSION=1.0
+
 ENV WORKSPACE_ROOT=/workspace
 
 ENV SRC_PATH=${WORKSPACE_ROOT}/src
