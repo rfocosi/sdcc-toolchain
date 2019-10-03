@@ -31,12 +31,21 @@ source $SRC_FILE_PATH/$FILE_NAME.params
 
 sdcc $SDCC_ARGS $SRC_FILE_RES_PATH -o $FILE_BUILD_PATH/
 
-if [ $? -eq 0 ] && [ -f "$FILE_BUILD_PATH/$SRC_HEX_FILE" ]; then
-  FILE_TARGET_PATH=`echo $TARGET_PATH/$SRC_FILE_REL_PATH | sed 's/\.c//g'`
+SRC_HEX_FILE="$FILE_NAME.ihx"
+SRC_REL_FILE="$FILE_NAME.rel"
 
+if [ $? -eq 0 ]; then
+  FILE_TARGET_PATH=`echo $TARGET_PATH/$SRC_FILE_REL_PATH | sed 's/\.c//g'`
   [ ! -d $FILE_TARGET_PATH ] && mkdir -p $FILE_TARGET_PATH
 
-  objcopy -I ihex -O binary $FILE_BUILD_PATH/$SRC_HEX_FILE $FILE_TARGET_PATH/$TARGET_BIN_FILE
+  if [ ! -z "$TARGET_BIN_FILE" ] && [ -f "$FILE_BUILD_PATH/$SRC_HEX_FILE" ]; then
+    objcopy -I ihex -O binary $FILE_BUILD_PATH/$SRC_HEX_FILE $FILE_TARGET_PATH/$TARGET_BIN_FILE
 
-  echo "Final file: $FILE_TARGET_PATH/$TARGET_BIN_FILE"
+    echo ".$FILE_TARGET_PATH/$TARGET_BIN_FILE"
+  fi
+
+  if [ ! -z "$TARGET_LIB_FILE" ] && [ -f "$FILE_BUILD_PATH/$SRC_REL_FILE" ]; then
+    sdar -rc $FILE_TARGET_PATH/$TARGET_LIB_FILE $FILE_BUILD_PATH/$SRC_REL_FILE
+    echo ".$FILE_TARGET_PATH/$TARGET_LIB_FILE"
+  fi
 fi
