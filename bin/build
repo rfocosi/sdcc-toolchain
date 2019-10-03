@@ -31,7 +31,7 @@ source $SRC_FILE_PATH/$FILE_NAME.params
 
 sdcc $SDCC_ARGS $SRC_FILE_RES_PATH -o $FILE_BUILD_PATH/
 
-if [ -f "$FILE_BUILD_PATH/$SRC_HEX_FILE" ]; then
+if [ $? -eq 0 ] && [ -f "$FILE_BUILD_PATH/$SRC_HEX_FILE" ]; then
   FILE_TARGET_PATH=`echo $TARGET_PATH/$SRC_FILE_REL_PATH | sed 's/\.c//g'`
 
   [ ! -d $FILE_TARGET_PATH ] && mkdir -p $FILE_TARGET_PATH
