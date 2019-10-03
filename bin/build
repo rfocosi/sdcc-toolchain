@@ -29,10 +29,10 @@ source $SRC_FILE_PATH/$FILE_NAME.params
 
 [ ! -d $FILE_BUILD_PATH ] && mkdir -p $FILE_BUILD_PATH
 
-sdcc $SDCC_ARGS $SRC_FILE_RES_PATH -o $FILE_BUILD_PATH/
-
 SRC_HEX_FILE="$FILE_NAME.ihx"
 SRC_REL_FILE="$FILE_NAME.rel"
+
+sdcc $SDCC_ARGS $SRC_FILE_RES_PATH -o $FILE_BUILD_PATH/
 
 if [ $? -eq 0 ]; then
   FILE_TARGET_PATH=`echo $TARGET_PATH/$SRC_FILE_REL_PATH | sed 's/\.c//g'`
