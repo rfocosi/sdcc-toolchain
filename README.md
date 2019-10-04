@@ -50,7 +50,7 @@ docker run --rm \
       -v {/host-extra-lib/}:/extra-lib/ \
       -v {/host-extra-include/}:/extra-include/ \
       rfocosi/sdcc-toolchain:latest \
-      build file.c
+      build "file.c"
 ```
 
 To build all project's sources:
@@ -60,7 +60,7 @@ docker run --rm \
       -v {/host-extra-lib/}:/extra-lib/ \
       -v {/host-extra-include/}:/extra-include/ \
       rfocosi/sdcc-toolchain:latest \
-      build-all
+      build "*.c"
 ```
 
 #### Assembly
@@ -127,13 +127,13 @@ docker-compose run --rm sdcc info
 To build a single source file, run:
 
 ```
-docker-compose run --rm sdcc build <source.c>
+docker-compose run --rm sdcc build "file.c"
 ```
 
 To build all project's sources:
 
 ```
-docker-compose run --rm sdcc build-all
+docker-compose run --rm sdcc build "*.c"
 ```
 
 Ps.: The root directory is `$PROJECT_WORKSPACE\src`

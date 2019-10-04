@@ -1,7 +1,7 @@
 FROM debian:bullseye
 MAINTAINER Roberto Focosi, roberto.focosi@msx2cas.com
 
-ENV TOOLCHAIN_VERSION=1.2.1
+ENV TOOLCHAIN_VERSION=1.3
 
 ENV WORKSPACE_ROOT=/workspace
 
@@ -25,7 +25,6 @@ RUN mkdir -p $SDCC_LIB && \
 ADD bin/* /usr/local/bin/
 
 RUN chmod +x /usr/local/bin/build && \
-    chmod +x /usr/local/bin/build-all && \
     chmod +x /usr/local/bin/clean && \
     chmod +x /usr/local/bin/info && \
     chmod +x /usr/local/bin/sdasm && \
