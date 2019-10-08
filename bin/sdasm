@@ -41,15 +41,24 @@ for SRC_FILE_RES_PATH in "${SRC_FILES[@]}"; do
 
   [ -f $SRC_FILE_PATH/$FILE_NAME.params ] && source $SRC_FILE_PATH/$FILE_NAME.params
 
-  FILE_BIN_PATH="$FILE_TARGET_PATH/$TARGET_BIN_FILE"
+  if [ -z "$TARGET_BIN_FILE" ]; then
+    if [ -f "$FILE_REL" ]; then
+      mv $FILE_REL $FILE_TARGET_PATH
+      OUT_FILE="$FILE_TARGET_PATH/$FILE_NAME.rel"
+    fi
+  else
+    FILE_BIN_PATH="$FILE_TARGET_PATH/$TARGET_BIN_FILE"
 
-  [ -f "$FILE_REL" ] && echo "Linking file $FILE_REL" && sdcc $SDCC_ARGS $FILE_REL -o $FILE_BUILD_PATH/
+    [ -f "$FILE_REL" ] && echo "Linking file $FILE_REL" && sdcc $SDCC_ARGS $FILE_REL -o $FILE_BUILD_PATH/
 
-  [ -f "$FILE_IHX" ] && echo "Copying file $FILE_IHX" && objcopy -I ihex -O binary $FILE_IHX $FILE_BIN_PATH
+    [ -f "$FILE_IHX" ] && echo "Copying file $FILE_IHX" && objcopy -I ihex -O binary $FILE_IHX $FILE_BIN_PATH
 
-  [ ! -f "$FILE_BIN_PATH" ] && echo "Error building file: $FILE_BIN_PATH"
+    [ ! -f "$FILE_BIN_PATH" ] && echo "Error building file: $FILE_BIN_PATH"
 
-  if [ -f "$FILE_BIN_PATH" ]; then
-    echo "Done: $FILE_BIN_PATH"
+    OUT_FILE=$FILE_BIN_PATH
+  fi
+
+  if [ -f "$OUT_FILE" ]; then
+    echo "Done: $OUT_FILE" | awk -v pattern="$WORKSPACE_ROOT/" '{ gsub(pattern, "");}1'
   fi
 done
