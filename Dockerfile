@@ -1,7 +1,7 @@
 FROM debian:bullseye
 MAINTAINER Roberto Focosi, roberto.focosi@msx2cas.com
 
-ENV TOOLCHAIN_VERSION=1.3
+ENV TOOLCHAIN_VERSION=2.0
 
 ENV WORKSPACE_ROOT=/workspace
 

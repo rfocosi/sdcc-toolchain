@@ -16,7 +16,7 @@ SRC_FILES=()
 [ ${#SRC_FILES[@]} -eq 0 ] && SRC_FILES[0]=$SRC_FILE_PARAM
 
 for SRC_FILE_RES_PATH in "${SRC_FILES[@]}"; do
-  [ ! -f "$SRC_FILE_RES_PATH" ] && echo "Not found $SRC_FILE_PARAM"
+  [ ! -f "$SRC_FILE_RES_PATH" ] && echo "Not found $SRC_FILE_PARAM" && continue
 
   SRC_FILE_REL_PATH=`realpath $SRC_FILE_RES_PATH | awk -v pattern="$SRC_PATH/" '{ gsub(pattern, "");}1'`
 
@@ -25,9 +25,9 @@ for SRC_FILE_RES_PATH in "${SRC_FILES[@]}"; do
 
   cd $WORKSPACE_ROOT
 
-  FILE_BUILD_PATH=`echo $BUILD_PATH/$SRC_FILE_REL_PATH | sed 's/\.[^.]\+$//g'`
+  FILE_BUILD_PATH=`echo $BUILD_PATH/$SRC_FILE_REL_PATH | sed 's/\/[^\/]\+\.[^.]\+$//g'`
 
-  FILE_NAME=`echo $SRC_FILE_NAME | sed 's/\.c//g'`
+  FILE_NAME=`echo $SRC_FILE_NAME | sed 's/\.\w\+$//g'`
 
   source $SRC_FILE_PATH/$FILE_NAME.params
 

@@ -1,39 +1,55 @@
 #!/bin/bash
 
-SRC_FILE_PARAM=$1
-
 if [ -z "$SDAS_BIN" ]; then
   echo "Enviroment variable \$SDAS_BIN not set!"
   exit 1
 fi
 
-if [ -z "$SRC_FILE_PARAM" ]; then
-  echo "Usage: `basename $0` <source_file_path>"
-  exit 1
-fi
+[ -z "$1" ] && echo "Usage: `basename $0` <filename>" && exit 1
 
-SRC_FILE_RES_PATH=`find $SRC_PATH -type f -regex ".+$SRC_FILE_PARAM"`
+SRC_FILE_PARAM=$1
 
-if [ ! -f "$SRC_FILE_RES_PATH" ]; then
-  echo "Not found $SRC_FILE_PARAM"
-  exit 1
-fi
+SRC_FILES=()
 
-SRC_FILE_REL_PATH=`realpath $SRC_FILE_RES_PATH | awk -v pattern="$SRC_PATH/" '{ gsub(pattern, "");}1'`
+[ -z "`echo $SRC_FILE_PARAM | grep /`" ] && SRC_FILES=( `find $SRC_PATH -type f -name $SRC_FILE_PARAM` )
 
-SRC_FILE_PATH=`dirname $SRC_FILE_RES_PATH`
-SRC_FILE_NAME=`basename $SRC_FILE_RES_PATH`
+[ ${#SRC_FILES[@]} -eq 0 ] && SRC_FILES=( `find $SRC_PATH -type f -regex $SRC_FILE_PARAM` )
 
-cd $WORKSPACE_ROOT
+[ ${#SRC_FILES[@]} -eq 0 ] && SRC_FILES[0]=$SRC_FILE_PARAM
 
-$SDAS_BIN -o $SRC_FILE_RES_PATH
+for SRC_FILE_RES_PATH in "${SRC_FILES[@]}"; do
+  [ ! -f "$SRC_FILE_RES_PATH" ] && echo "Not found $SRC_FILE_RES_PATH" && continue
+  SRC_FILE_REL_PATH=`realpath $SRC_FILE_RES_PATH | awk -v pattern="$SRC_PATH/" '{ gsub(pattern, "");}1'`
 
-FILE_TARGET=`echo $SRC_FILE_RES_PATH | sed 's/\.[^.]\+$//g'`.rel
+  SRC_FILE_PATH=`dirname $SRC_FILE_RES_PATH`
+  SRC_FILE_NAME=`basename $SRC_FILE_RES_PATH`
 
-if [ -f "$FILE_TARGET" ]; then
-  mv $FILE_TARGET $SDCC_LIB
+  cd $WORKSPACE_ROOT
 
-  TARGET_NAME=`basename $FILE_TARGET`
+  FILE_BUILD_PATH=`echo $BUILD_PATH/$SRC_FILE_REL_PATH | sed 's/\/[^\/]\+\.[^.]\+$//g'`
+  FILE_TARGET_PATH=`echo $TARGET_PATH/$SRC_FILE_REL_PATH | sed 's/\/[^\/]\+\.[^.]\+$//g'`
 
-  echo "Final file: $SDCC_LIB/$TARGET_NAME"
-fi
+  [ ! -d $FILE_BUILD_PATH ] && mkdir -p $FILE_BUILD_PATH
+  [ ! -d $FILE_TARGET_PATH ] && mkdir -p $FILE_TARGET_PATH
+
+  FILE_NAME=`echo $SRC_FILE_NAME | sed 's/\.\w\+$//g'`
+
+  FILE_REL="$FILE_BUILD_PATH/$FILE_NAME.rel"
+  FILE_IHX="$FILE_BUILD_PATH/$FILE_NAME.ihx"
+
+  echo "Compiling $SRC_FILE_RES_PATH ..." && [ -f "$SRC_FILE_RES_PATH" ] && ! $SDAS_BIN -lso $FILE_REL $SRC_FILE_RES_PATH && exit 1
+
+  [ -f $SRC_FILE_PATH/$FILE_NAME.params ] && source $SRC_FILE_PATH/$FILE_NAME.params
+
+  FILE_BIN_PATH="$FILE_TARGET_PATH/$TARGET_BIN_FILE"
+
+  [ -f "$FILE_REL" ] && echo "Linking file $FILE_REL" && sdcc $SDCC_ARGS $FILE_REL -o $FILE_BUILD_PATH/
+
+  [ -f "$FILE_IHX" ] && echo "Copying file $FILE_IHX" && objcopy -I ihex -O binary $FILE_IHX $FILE_BIN_PATH
+
+  [ ! -f "$FILE_BIN_PATH" ] && echo "Error building file: $FILE_BIN_PATH"
+
+  if [ -f "$FILE_BIN_PATH" ]; then
+    echo "Done: $FILE_BIN_PATH"
+  fi
+done
