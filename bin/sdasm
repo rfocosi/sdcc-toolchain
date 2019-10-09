@@ -64,4 +64,9 @@ for SRC_FILE_RES_PATH in "${SRC_FILES[@]}"; do
   if [ -f "$OUT_FILE" ]; then
     echo "Done: $OUT_FILE" | awk -v pattern="$WORKSPACE_ROOT/" '{ gsub(pattern, "");}1'
   fi
+
+  SDCC_ARGS=""
+  TARGET_BIN_FILE=""
+  TARGET_LIB_FILE=""
+  OUT_FILE=""
 done
