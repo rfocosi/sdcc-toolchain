@@ -39,18 +39,17 @@ for SRC_FILE_RES_PATH in "${SRC_FILES[@]}"; do
   sdcc $SDCC_ARGS $SRC_FILE_RES_PATH -o $FILE_BUILD_PATH/
 
   if [ $? -eq 0 ]; then
-    FILE_TARGET_PATH=`echo $TARGET_PATH/$SRC_FILE_REL_PATH | sed 's/\.c//g'`
-    [ ! -d $FILE_TARGET_PATH ] && mkdir -p $FILE_TARGET_PATH
+    [ ! -d $TARGET_PATH ] && mkdir -p $TARGET_PATH
 
     if [ ! -z "$TARGET_BIN_FILE" ] && [ -f "$FILE_BUILD_PATH/$SRC_HEX_FILE" ]; then
-      objcopy -I ihex -O binary $FILE_BUILD_PATH/$SRC_HEX_FILE $FILE_TARGET_PATH/$TARGET_BIN_FILE
+      objcopy -I ihex -O binary $FILE_BUILD_PATH/$SRC_HEX_FILE $TARGET_PATH/$TARGET_BIN_FILE
 
-      echo ".$FILE_TARGET_PATH/$TARGET_BIN_FILE"
+      echo ".$TARGET_PATH/$TARGET_BIN_FILE"
     fi
 
     if [ ! -z "$TARGET_LIB_FILE" ] && [ -f "$FILE_BUILD_PATH/$SRC_REL_FILE" ]; then
-      sdar -rc $FILE_TARGET_PATH/$TARGET_LIB_FILE $FILE_BUILD_PATH/$SRC_REL_FILE
-      echo ".$FILE_TARGET_PATH/$TARGET_LIB_FILE"
+      sdar -rc $TARGET_PATH/$TARGET_LIB_FILE $FILE_BUILD_PATH/$SRC_REL_FILE
+      echo ".$TARGET_PATH/$TARGET_LIB_FILE"
     fi
   fi
   SDCC_ARGS=""

@@ -27,10 +27,9 @@ for SRC_FILE_RES_PATH in "${SRC_FILES[@]}"; do
   cd $WORKSPACE_ROOT
 
   FILE_BUILD_PATH=`echo $BUILD_PATH/$SRC_FILE_REL_PATH | sed 's/\/[^\/]\+\.[^.]\+$//g'`
-  FILE_TARGET_PATH=`echo $TARGET_PATH/$SRC_FILE_REL_PATH | sed 's/\/[^\/]\+\.[^.]\+$//g'`
 
   [ ! -d $FILE_BUILD_PATH ] && mkdir -p $FILE_BUILD_PATH
-  [ ! -d $FILE_TARGET_PATH ] && mkdir -p $FILE_TARGET_PATH
+  [ ! -d $TARGET_PATH ] && mkdir -p $TARGET_PATH
 
   FILE_NAME=`echo $SRC_FILE_NAME | sed 's/\.\w\+$//g'`
 
@@ -43,7 +42,7 @@ for SRC_FILE_RES_PATH in "${SRC_FILES[@]}"; do
 
   if [ -f "$FILE_REL" ]; then
     if [ ! -z "$TARGET_BIN_FILE" ]; then
-      FILE_BIN_PATH="$FILE_TARGET_PATH/$TARGET_BIN_FILE"
+      FILE_BIN_PATH="$TARGET_PATH/$TARGET_BIN_FILE"
 
       [ -f "$FILE_REL" ] && echo "Linking file $FILE_REL" && sdcc $SDCC_ARGS $FILE_REL -o $FILE_BUILD_PATH/
 
@@ -53,11 +52,11 @@ for SRC_FILE_RES_PATH in "${SRC_FILES[@]}"; do
 
       OUT_FILE="$FILE_BIN_PATH"
     elif [ ! -z "$TARGET_LIB_FILE" ]; then
-      sdar -rc $FILE_TARGET_PATH/$TARGET_LIB_FILE $FILE_REL
-      OUT_FILE="$FILE_TARGET_PATH/$TARGET_LIB_FILE"
+      sdar -rc $TARGET_PATH/$TARGET_LIB_FILE $FILE_REL
+      OUT_FILE="$TARGET_PATH/$TARGET_LIB_FILE"
     else
-      mv $FILE_REL $FILE_TARGET_PATH
-      OUT_FILE="$FILE_TARGET_PATH/$FILE_NAME.rel"
+      mv $FILE_REL $TARGET_PATH
+      OUT_FILE="$TARGET_PATH/$FILE_NAME.rel"
     fi
   fi
 
